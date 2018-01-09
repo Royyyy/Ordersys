@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>查看用户列表</title>
+<style>
+body{
+    color: #333;
+    font: 16px Verdana, "Helvetica Neue", helvetica, Arial, 'Microsoft YaHei', sans-serif;
+    margin: 0px;
+    padding: 20px;
+}
+
+a{
+    color: #868686;
+    cursor: pointer;
+}
+a:hover{
+    text-decoration: underline;
+}
+h2{
+    color: #4288ce;
+    font-weight: 400;
+    padding: 6px 0;
+    margin: 6px 0 0;
+    font-size: 28px;
+    border-bottom: 1px solid #eee;
+}
+div{
+margin:8px;
+}
+.info{
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.copyright{
+    margin-top: 24px;
+    padding: 12px 0;
+  border-top: 1px solid #eee;
+}
+</style>
+</head>
+<body>
+<h2>用户列表（{$count}）</h2> 
+{volist name="list" id="user" }
+<div class="info">
+ID：{$user.user_id}<br/>
+昵称：{$user.nickname}<br/>
+邮箱：{$user.email}<br/>
+生日：{$user.birthday}<br/>
+</div>
+{/volist}
+<div class="copyright">
+    <a title="官方网站" href="http://www.thinkphp.cn">ThinkPHP</a> 
+    <span>V5</span> 
+    <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+</div>
+</body>
+</html>
