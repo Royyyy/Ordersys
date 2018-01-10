@@ -13,5 +13,11 @@ use think\Controller;
 
 class Order extends Controller
 {
-
+	function __construct()
+	{
+		parent::__construct();
+	}
+	public function index(){
+		return view('user');
+	}
 }
