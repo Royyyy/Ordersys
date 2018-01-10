@@ -16,4 +16,6 @@ class Index extends Controller
   public function hello($name = "张山"){
         echo "llll".$name;
     }
+
+
 }

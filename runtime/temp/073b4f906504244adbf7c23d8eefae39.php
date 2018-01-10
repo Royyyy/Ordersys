@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1515579296;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\header.html";i:1515593932;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\footer.html";i:1515470837;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1515602766;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\header.html";i:1515597443;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\footer.html";i:1515597837;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -33,110 +33,46 @@
 
 
     <div class="main-panel">
-        <nav class="navbar navbar-transparent navbar-absolute">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Profile</a>
-                </div>
 
-            </div>
-        </nav>
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-md-8">
 						<div class="card">
 							<div class="card-header" data-background-color="purple">
-								<h4 class="title">Edit Profile</h4>
-								<p class="category">Complete your profile</p>
+								<h4 class="title">登陆界面</h4>
+								<p class="category">欢迎来到点我点餐系统</p>
 							</div>
 							<div class="card-content">
-								<form>
-									<div class="row">
-										<div class="col-md-5">
-											<div class="form-group label-floating">
-												<label class="control-label">Company (disabled)</label>
-												<input type="text" class="form-control" disabled>
-											</div>
+								<form action="<?php echo url('User/login'); ?>">
+									<div class="col-md-3">
+										<div class="form-group label-floating">
+											<label class="control-label">用户名</label>
+											<input type="text" class="form-control" name="userAccount">
 										</div>
+									</div>
+									<div class="row">
 										<div class="col-md-3">
 											<div class="form-group label-floating">
-												<label class="control-label">Username</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Email address</label>
-												<input type="email" class="form-control" >
+												<label class="control-label">密码</label>
+												<input type="password" class="form-control" name="userPass">
 											</div>
 										</div>
 									</div>
-
-									<div class="row">
-										<div class="col-md-6">
+									<div class="row" style="margin-left: 0.2%">
+										<div class="col-md-3">
 											<div class="form-group label-floating">
-												<label class="control-label">Fist Name</label>
-												<input type="text" class="form-control" >
+												<label class="control-label">验证码</label>
+												<input type="text" class="form-control" name="verify" data-error="验证码错误" required>
 											</div>
 										</div>
-										<div class="col-md-6">
-											<div class="form-group label-floating">
-												<label class="control-label">Last Name</label>
-												<input type="text" class="form-control" >
-											</div>
+										<div class="col-md-2">
+											<img id="verifyimg"class="verifyimg reloadverify" src="<?php echo url('User/verify'); ?>" alt="">
 										</div>
 									</div>
 
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group label-floating">
-												<label class="control-label">Adress</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">City</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Country</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Postal Code</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label>About Me</label>
-												<div class="form-group label-floating">
-													<label class="control-label"> Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.</label>
-													<textarea class="form-control" rows="5"></textarea>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<a href="<?php echo url('User/index'); ?>"><button type="submit" class="btn btn-primary pull-right">Update Profile</button></a>
+									<a href="<?php echo url('User/index'); ?>">Click me</a>
+									<button type="submit" class="btn btn-primary pull-right">Update Profile</button>
 									<div class="clearfix"></div>
 								</form>
 							</div>
@@ -146,62 +82,43 @@
 				</div>
 			</div>
 		</div>
+<script>
+    $(function(){
+        // 刷新验证码
+        var verifyimg = $(".verifyimg").attr("src");
+        $(".reloadverify").click(function(){
+            if( verifyimg.indexOf('?')>0){
+                $(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
+            }else{
+                $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+            }
+        });
+    })
+</script>
 
 
-<!--<footer class="footer">
-    <div class="container-fluid">
-        <nav class="pull-left">
-            <ul>
-                <li>
-                    <a href="#">
-                        Home
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Company
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Portfolio
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Blog
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <p class="copyright pull-right">
-            &copy; <script>document.write(new Date().getFullYear())</script> <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
-        </p>
-    </div>
-</footer>
-</div>
-</div>
+
 </body>
 
 <!--   Core JS Files   -->
-<script src="__DIR__js/jquery-3.1.0.min.js" type="text/javascript"></script>
-<script src="__DIR__js/bootstrap.min.js" type="text/javascript"></script>
-<script src="__DIR__js/material.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/bootstrap.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/material.min.js" type="text/javascript"></script>
 
 <!--  Charts Plugin -->
-<script src=".__DIR__js/chartist.min.js"></script>
+<script src="__STATIC__js/chartist.min.js"></script>
 
 <!--  Notifications Plugin    -->
-<script src="__DIR__js/bootstrap-notify.js"></script>
+<script src="__STATIC__js/bootstrap-notify.js"></script>
 
 <!--  Google Maps Plugin    -->
 <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script> -->
 
 <!-- Material Dashboard javascript methods -->
-<script src="__DIR__js/material-dashboard.js"></script>
+<script src="__STATIC__js/material-dashboard.js"></script>
 
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-<script src="__DIR__js/demo.js"></script>
+<script src="__STATIC__js/demo.js"></script>
 
 </html>
--->
+

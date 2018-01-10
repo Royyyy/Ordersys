@@ -284,11 +284,13 @@ return [
 ],
 'captcha'  => [
     // 字体大小
-    'fontSize' => 15,
+    'fontSize' =>24,
     // 验证码长度（位数）
     'length'   => 4,
     // 使用中文验证码
-    //'useZh' =>true,        
+    //'useZh' =>true,
+	'imageH' =>0,
+	'imageW' =>0,
 ],
 	//视图输出字符串内容替换
 	'view_replace_str'  =>[

@@ -5,90 +5,39 @@
 					<div class="col-md-8">
 						<div class="card">
 							<div class="card-header" data-background-color="purple">
-								<h4 class="title">Edit Profile</h4>
-								<p class="category">Complete your profile</p>
+								<h4 class="title">登陆界面</h4>
+								<p class="category">欢迎来到点我点餐系统</p>
 							</div>
 							<div class="card-content">
-								<form>
+								<form action="{:url('User/login')}" method="post">
+									<div class="col-md-3">
+										<div class="form-group label-floating">
+											<label class="control-label">用户名</label>
+											<input type="text" class="form-control" name="userAccount">
+										</div>
+									</div>
 									<div class="row">
-										<div class="col-md-5">
+										<div class="col-md-3">
 											<div class="form-group label-floating">
-												<label class="control-label">Company (disabled)</label>
-												<input type="text" class="form-control" disabled>
+												<label class="control-label">密码</label>
+												<input type="password" class="form-control" name="userPass">
+											</div>
+										</div>
+									</div>
+									<div class="row" style="margin-left: 0.2%">
+										<div class="col-md-3">
+											<div class="form-group label-floating">
+												<label class="control-label">验证码</label>
+												<input type="text" class="form-control" name="verify" data-error="验证码错误" required>
 											</div>
 										</div>
 										<div class="col-md-3">
-											<div class="form-group label-floating">
-												<label class="control-label">Username</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Email address</label>
-												<input type="email" class="form-control" >
-											</div>
+											<img  class="verifyimg reloadverify" src="{:url('User/verify')}" alt="" onclick="reflash2()">
 										</div>
 									</div>
 
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group label-floating">
-												<label class="control-label">Fist Name</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="form-group label-floating">
-												<label class="control-label">Last Name</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-									</div>
 
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group label-floating">
-												<label class="control-label">Adress</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">City</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Country</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group label-floating">
-												<label class="control-label">Postal Code</label>
-												<input type="text" class="form-control" >
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label>About Me</label>
-												<div class="form-group label-floating">
-													<label class="control-label"> Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.</label>
-													<textarea class="form-control" rows="5"></textarea>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<a href="{:url('User/index')}"><button type="submit" class="btn btn-primary pull-right">Update Profile</button></a>
+									<input type="submit" class="btn btn-primary pull-right" value="登录"/>
 									<div class="clearfix"></div>
 								</form>
 							</div>
@@ -100,4 +49,4 @@
 		</div>
 
 
-<!--{include file="index/footer" /}-->
+{include file="index/footer" /}

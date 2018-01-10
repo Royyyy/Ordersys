@@ -17,7 +17,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "topthink/framework": "*"
+        "topthink/framework": "*",
+        "gregwar/captcha": "1.*"
     },
     "extra": {
         "think-path": "thinkphp"
@@ -25,6 +26,12 @@
     "minimum-stability": "dev",
     "config": {
         "preferred-install": "dist",
-        "secure-http": true
+        "secure-http": false
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
 }

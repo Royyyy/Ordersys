@@ -10,6 +10,8 @@ namespace app\index\controller;
 
 use think\Db;
 use think\Controller;
+use app\common\helper\VerifyHelper;
+use think\Model;
 
 class User extends Controller
 {
@@ -20,5 +22,22 @@ class User extends Controller
 	public function index(){
 		return view('user');
 	}
+	/**
+	 * 显示验证码图片
+	 */
+	public function verify()
+	{
+		VerifyHelper::verify();
+	}
 
+	public function login(){
+		$data = input('post.');
+
+		$result = $this->validate($data, 'UserValidate.register');
+		if(is_array($result)) {
+			return $this->err('注册失败', ['valid' => $result]);
+		}
+		$user = Model('User');
+
+	}
 }

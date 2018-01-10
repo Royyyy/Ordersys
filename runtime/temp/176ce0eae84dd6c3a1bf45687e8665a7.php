@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:70:"E:\wamp64\www\Ordersys\public/../application/index\view\user\user.html";i:1515516806;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\header.html";i:1515593932;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\footer.html";i:1515470837;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:70:"E:\wamp64\www\Ordersys\public/../application/index\view\user\user.html";i:1515516806;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\header.html";i:1515597443;s:73:"E:\wamp64\www\Ordersys\public/../application/index\view\index\footer.html";i:1515597837;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -33,20 +33,7 @@
 
 
     <div class="main-panel">
-        <nav class="navbar navbar-transparent navbar-absolute">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Profile</a>
-                </div>
 
-            </div>
-        </nav>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -165,60 +152,29 @@
 </div>
 
 
-<footer class="footer">
-    <div class="container-fluid">
-        <nav class="pull-left">
-            <ul>
-                <li>
-                    <a href="#">
-                        Home
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Company
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Portfolio
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Blog
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <p class="copyright pull-right">
-            &copy; <script>document.write(new Date().getFullYear())</script> <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
-        </p>
-    </div>
-</footer>
-</div>
-</div>
+
+
 </body>
 
 <!--   Core JS Files   -->
-<script src="__DIR__js/jquery-3.1.0.min.js" type="text/javascript"></script>
-<script src="__DIR__js/bootstrap.min.js" type="text/javascript"></script>
-<script src="__DIR__js/material.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/bootstrap.min.js" type="text/javascript"></script>
+<script src="__STATIC__js/material.min.js" type="text/javascript"></script>
 
 <!--  Charts Plugin -->
-<script src=".__DIR__js/chartist.min.js"></script>
+<script src="__STATIC__js/chartist.min.js"></script>
 
 <!--  Notifications Plugin    -->
-<script src="__DIR__js/bootstrap-notify.js"></script>
+<script src="__STATIC__js/bootstrap-notify.js"></script>
 
 <!--  Google Maps Plugin    -->
 <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script> -->
 
 <!-- Material Dashboard javascript methods -->
-<script src="__DIR__js/material-dashboard.js"></script>
+<script src="__STATIC__js/material-dashboard.js"></script>
 
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-<script src="__DIR__js/demo.js"></script>
+<script src="__STATIC__js/demo.js"></script>
 
 </html>
 

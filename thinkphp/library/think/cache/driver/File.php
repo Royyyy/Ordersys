@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2016 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -21,14 +21,14 @@ class File extends Driver
 {
     protected $options = [
         'expire'        => 0,
-        'cache_subdir'  => false,
+        'cache_subdir'  => true,
         'prefix'        => '',
         'path'          => CACHE_PATH,
         'data_compress' => false,
     ];
 
     /**
-     * 架构函数
+     * 构造函数
      * @param array $options
      */
     public function __construct($options = [])
@@ -109,12 +109,10 @@ class File extends Driver
         $content = file_get_contents($filename);
         if (false !== $content) {
             $expire = (int) substr($content, 8, 12);
-            if (0 != $expire && $_SERVER['REQUEST_TIME'] > filemtime($filename) + $expire) {
-                //缓存过期删除缓存文件
-                $this->unlink($filename);
+            if (0 != $expire && time() > filemtime($filename) + $expire) {
                 return $default;
             }
-            $content = substr($content, 20, -3);
+            $content = substr($content, 32);
             if ($this->options['data_compress'] && function_exists('gzcompress')) {
                 //启用数据压缩
                 $content = gzuncompress($content);
@@ -129,15 +127,18 @@ class File extends Driver
     /**
      * 写入缓存
      * @access public
-     * @param string    $name 缓存变量名
-     * @param mixed     $value  存储数据
-     * @param int       $expire  有效时间 0为永久
+     * @param string            $name 缓存变量名
+     * @param mixed             $value  存储数据
+     * @param integer|\DateTime $expire  有效时间（秒）
      * @return boolean
      */
     public function set($name, $value, $expire = null)
     {
         if (is_null($expire)) {
             $expire = $this->options['expire'];
+        }
+        if ($expire instanceof \DateTime) {
+            $expire = $expire->getTimestamp() - time();
         }
         $filename = $this->getCacheKey($name);
         if ($this->tag && !is_file($filename)) {
@@ -148,7 +149,7 @@ class File extends Driver
             //数据压缩
             $data = gzcompress($data, 3);
         }
-        $data   = "<?php\n//" . sprintf('%012d', $expire) . $data . "\n?>";
+        $data   = "<?php\n//" . sprintf('%012d', $expire) . "\n exit();?>\n" . $data;
         $result = file_put_contents($filename, $data);
         if ($result) {
             isset($first) && $this->setTagItem($filename);
@@ -188,7 +189,7 @@ class File extends Driver
         if ($this->has($name)) {
             $value = $this->get($name) - $step;
         } else {
-            $value = $step;
+            $value = -$step;
         }
         return $this->set($name, $value, 0) ? $value : false;
     }
@@ -201,7 +202,8 @@ class File extends Driver
      */
     public function rm($name)
     {
-        return $this->unlink($this->getCacheKey($name));
+        $filename = $this->getCacheKey($name);
+        return $this->unlink($filename);
     }
 
     /**
@@ -224,7 +226,11 @@ class File extends Driver
         $files = (array) glob($this->options['path'] . ($this->options['prefix'] ? $this->options['prefix'] . DS : '') . '*');
         foreach ($files as $path) {
             if (is_dir($path)) {
-                array_map('unlink', glob($path . '/*.php'));
+                $matches = glob($path . '/*.php');
+                if (is_array($matches)) {
+                    array_map('unlink', $matches);
+                }
+                rmdir($path);
             } else {
                 unlink($path);
             }
