@@ -293,7 +293,8 @@ return [
 	//视图输出字符串内容替换
 	'view_replace_str'  =>[
 		'__PUBLIC__' => 'public/',
-		'__DIR__'    => '/'
+		'__DIR__'    => '/',
+		'__STATIC__'    => 'static/'
 	],
 
 	'session'        =>[
@@ -301,4 +302,5 @@ return [
 		'type'       =>'',
 		'auto_start' =>'true'
 	],
+
 ];
