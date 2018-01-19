@@ -29,10 +29,10 @@ class User extends Controller
 
 			$result = Db::table("userinfo")->where(['userAccount' => $userAccount, 'userPass' => $userPass])->select();
 			if ($result != null) {
-				return show(1, '登录成功', $result);
+				return show($result);
 
 			} else {
-				return show(0, '登录失败');
+				return show('null');
 			}
 //		}else{
 //			return show(0,'什么都没有');
@@ -44,22 +44,75 @@ class User extends Controller
 	 * @param $userData		修改内容
 	 */
 	public function updateUserInfoI($userData){
+		$userID = $userData['userId'];
 
+		$user = model('User');
+		$result = $user->where('userId',$userID)
+			->update(['faceImg'       =>  $userData['faceImg']]);
+		if ($result != 0){
+			return show($result);
+		}else{
+			return show('null');
+		}
 	}
 
 	/**
-	 * 显示实时公告功能
+	 * 显示公告功能
+	 * @param $message 		公告
+	 */
+	public function showMessageI(){
+		$mes = Db::table('message')->order('time DSEC')->select();
+		for ($i = 0;$i<count($mes);$i++) {
+			$mes[$i]['time'] = date("Y-m-d H:i:s",$mes[$i]['time']);
+		}
+		return show($mes);
+	}
+
+	/**
+	 * 发送公告功能
 	 * @param $message 		实时公告
 	 */
-	public function showMessageI($message){
+	public function sendMessageI($message){
+		$time = strtotime(date("Y-m-d H:i:s"));
+		$data = ['content'=>$message,'time'=>$time];
+		$result = Db::table('message')->insert($data);
+		if ($result) {
+			# code...
+			return show($result);
+		}else{
+			return show('null');
+		}
+	}
 
+
+	/**
+	 * 删除公告功能
+	 * @param $message 		实时公告
+	 */
+	public function delMessageI($mesId){
+		
+		$result = Db::table('message')->where(['mesId'=>$mesId])->delete();
+		if ($result) {
+			# code...
+			return show($result);
+		}else{
+			return show('null');
+		}
 	}
 
 	/**
 	 * 用户列表功能
 	 */
 	public function userListI(){
+		$user = model('User');
+		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->where('u.role = r.roleId')->select();
 
+		if ($data != null) {
+			return show($data);
+
+		} else {
+			return show('null');
+		}
 	}
 
 	/**
@@ -67,7 +120,14 @@ class User extends Controller
 	 * @param $userId 		用户id
 	 */
 	public function userDetailI($userId){
+		$user = model('User');
+		$data = $user->where(['userId' => $userId])->select();
+		if ($data != null) {
+			return show($data);
 
+		} else {
+			return show('null');
+		}
 	}
 
 	/**
@@ -75,7 +135,15 @@ class User extends Controller
 	 * @param $userId		用户id
 	 */
 	public function userDelI($userId){
-
+		$user = model('User');
+		$result = $user->where(['userId'=>$userId,'role'=>0])->delete();
+		if ($result) {
+//			$result = "可以删除删除成功";
+			return show($result);
+		}else{
+//			$result = "删除失败";
+			return show('null');
+		}
 	}
 
 	/**
@@ -84,6 +152,15 @@ class User extends Controller
 	 */
 	public function userAddI($userData){
 
+
+		$user = model('User');
+		$result = $user->insert($userData);
+		if ($result) {
+			# code...
+			return show($result);
+		}else{
+			return show('null');
+		}
 	}
 
 	/**
@@ -91,7 +168,16 @@ class User extends Controller
 	 * @param $userData		用户信息
 	 */
 	public function changeUserInfoI($userData){
+		$userID = $userData['userId'];
 
+		$user = model('User');
+		$result = $user->where('userId', $userID)
+			->update(['faceImg' => $userData['faceImg'], 'role' => $userData['role']]);
+		if ($result != 0) {
+			return show($result);
+		} else {
+			return show('null');
+		}
 	}
 
 
