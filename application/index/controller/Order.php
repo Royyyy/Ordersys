@@ -25,14 +25,22 @@ class Order extends Controller
 	 * 设定桌号功能
 	 * @param $tableId		桌号
 	 */
+
 	public function setTableNum($tableId,$waiterId){
 		$order = model('Order');
 		$orderBeginDate = strtotime(date("Y-m-d H:i:s"));
-		$data=[$orderBeginDate,$waiterId,0,$tableId];
+		$data=['orderBeginDate'=>$orderBeginDate,'waiterId'=>$waiterId,'orderState'=>0,'tableId'=>$tableId];
+//		$data=[$orderBeginDate,0,0,$tableId];
 		$result = $order->insert($data);
 		$orderId = $order->getLastInsID();
+		$result2 = Db::table('table')->where(['tableId' => $tableId])->update(['tableState'=>1]);
 		$this->assign('orderId',$orderId);
-		return view();
+		if ($result){
+			$this->success('选择桌子成功！您目前选择的是'+$orderId+'号桌子');
+		} else {
+			$this->error('选择桌子失败');
+		}
+//		return view('user/main');
 	}
 
 	/**
@@ -63,12 +71,25 @@ class Order extends Controller
 		$this->assign('orderId',$orderId);
 		return view();
 	}
+
 	/**
-	 * 买单功能
+	 * 显示订单列表
+	 */
+	public function showOrder(){
+		$order = model('Order');
+		$data = $order->select();
+		return $this->fetch('showorder',['data'=>$data]);
+	}
+
+	/**
+	 * 查看订单详细情况
 	 * @param $orderId		订单id
 	 */
-	public function pay($orderId){
-
+	public function orderDetail($orderId){
+		$order = model('Order');
+		$data = $order->where(['orderId' => $orderId])->select();
+		$this->assign('data',$data);
+		return view();
 	}
 
 	/**
@@ -77,21 +98,27 @@ class Order extends Controller
 	 * @param $orderState	订单状态
 	 */
 	public function orderEnd($orderId,$orderState){
-
+		$order = model('Order');
+		$result = $order->where('orderId',$orderId)->update('orderState',$orderState);
+		$tableId = $order->where('orderId',$orderId)->select('tableId');
+		$result2 = Db::table('table')->where(['tableId' => $tableId])->update('tableState',1);
+		if ($result != 0) {
+			$this->success('订单结单成功');
+		} else {
+			$this->error('订单结单失败');
+		}
 	}
 
-	/**
-	 * 准备结账功能
-	 * @param $orderId		订单id
-	 */
-	public function orderReady($orderId){
 
-	}
 
 	/**
 	 * 通过订单的状态来判断是否为空桌子
 	 */
 	public function showTableState(){
-
+		$order = model('Order');
+		$table = Db::table('table')->where('tableState',0)->select();
+		$this->assign('table',$table);
+		return view('user/table');
+		//		return $this->fetch('user/table',['table'=>$table]);
 	}
 }

@@ -1,0 +1,51 @@
+{include file="index/header" /}
+		<div class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="card">
+							<div class="card-header" data-background-color="purple">
+								<h4 class="title">登陆界面</h4>
+								<p class="category">欢迎来到点我点餐系统</p>
+							</div>
+							<thead>
+							<tr>
+								<th>菜品编号
+								<th>菜品名称
+								<th>菜品简介
+								<th>菜品图片
+								<th>菜品详情
+								<th>是否推荐
+								<th>菜品单价
+								<th>菜品类别编号
+								<th>菜品类别
+							</th>
+							</thead>
+
+
+							{volist name="data" id="vo"}
+							<tr>
+								<td>{$vo.dishesId}
+								<td>{$vo.dishesName}
+								<td>{$vo.dishesDiscript}
+								<td>{$vo.dishesImg}
+								<td>{$vo.dishesTxt}
+								<td>{$vo.recommend}
+								<td>{$vo.dishesPrice}
+								<td>{$vo.dsId}
+								<td>{$vo.dsName}
+
+
+
+							</tr>
+							{/volist}
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+{include file="index/footer" /}

@@ -90,7 +90,7 @@ class User extends Controller
 	 * @param $message 		实时公告
 	 */
 	public function delMessageI($mesId){
-		
+
 		$result = Db::table('message')->where(['mesId'=>$mesId])->delete();
 		if ($result) {
 			# code...

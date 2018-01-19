@@ -264,11 +264,11 @@ return [
 // 数据库配置2
 'db3'   =>  [
     // 数据库类型
-    'type'     => 'mysql',
+    'type'     => '',
     // 服务器地址
     'hostname' => '127.0.0.1',
     // 数据库名
-    'database' => 'tpshop3',
+    'database' => '',
     // 数据库用户名
     'username' => 'root',
     // 数据库密码
@@ -296,7 +296,7 @@ return [
 	'view_replace_str'  =>[
 		'__PUBLIC__' => 'public/',
 		'__DIR__'    => '/',
-		'__STATIC__'    => 'static/'
+		'__STATIC__'    => '/static/'
 	],
 
 	'session'        =>[
