@@ -1,38 +1,70 @@
-
-
+<script src="__STATIC__js/jquery-3.1.0.min.js" type="text/javascript"></script>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
 			{volist name="sort" id="so"}
-				<div class="col-md-8">
+				<div class="col-md-8" id="{$so.dsId}" style="position: relative">
 
 					<div class="card">
-						<div class="card-header" data-background-color="purple">
+						<div class="card-header" data-background-color="green">
 							<h4 class="title">{$so.dsName}</h4>
 						</div>
 						<div class="card-content">
-							<if condition="($data.0.dsId eq $so.dsId)">
-								{volist name=""}
-							</if>
+							{foreach $data as $d}
+								{if condition="$so.dsId eq $d.dsId"}
+									<a title="{$d.dishesName}" id="{$d.dishesId}">
+										{if condition="$d.dishesImg eq null"}
+											<img src="__STATIC__img/dishes.png" style="width: 120px;height: 80px;padding: 10px" alt="{$d.dishesName}" class="{$d.dishesId}" onclick="doit('{$d.dishesId}','{$Think.session.orderId}');">
+										{else/}
+											<img src="{$d.dishesImg}" style="width: 120px;height: 80px;padding: 10px" alt="{$d.dishesName}" class="{$d.dishesId}" onclick="doit('{$d.dishesId}','{$Think.session.orderId}');">
+										{/if}
+									</a>
+								{/if}
+							{/foreach}
 						</div>
 					</div>
 				</div>
 			{/volist}
-			<div class="col-md-4">
-				<div class="card card-profile">
-					<div class="card-avatar">
-						<h4 class="card-title">订单</h4>
+			<div id="test">
+			<div class="col-lg-4 col-md-12" style="position: absolute;left: 66%;">
+				<div class="card">
+					<div class="card-header" data-background-color="green">
+						<h4 class="title">{$Think.session.orderId}号订单详情</h4>
+						<p class="category">开单时间:{$Think.session.orderBeginDate},经手人：{$Think.session.userAccount}</p>
 					</div>
-
-					<div class="content">
-
-
+					<div class="card-content table-responsive">
+						<table class="table table-hover">
+							<thead class="text-warning">
+							<th>ID</th>
+							<th>菜品名字</th>
+							<th>价格</th>
+							<th>数量</th>
+							</thead>
+							<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							</tbody>
+						</table>
+						<hr/>
+						<h3>total：XXXX元</h3><a href="#pablo" class="btn btn-primary btn-round" data-background-color="green" style="width: 100%">确认订单</a>
 					</div>
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>
 </div>
 
+<script>
+	function doit(dishes,orderId) {
+		var url = "{:url('order/cart')}";
+		$("#test").load(url,{"dishes" : dishes,"orderId":orderId});
+    }
 
+
+</script>
 

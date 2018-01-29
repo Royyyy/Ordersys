@@ -24,13 +24,13 @@ class User extends Controller
 		return view('main');
 	}
 	public function index_manager(){
-		return view('main');
+		return view('manager_main');
 	}
 	public function index_chef(){
-		return view('main');
+		return view('chef_main');
 	}
 	public function index_server(){
-		return view('main');
+		return view('server_main');
 	}
 	/**
 	 * 显示验证码图片

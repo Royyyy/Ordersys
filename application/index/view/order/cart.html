@@ -1,0 +1,33 @@
+
+<div class="col-lg-4 col-md-12" style="position: absolute;left: 66%;">
+	<div class="card">
+		<div class="card-header" data-background-color="green">
+			<h4 class="title">{$Think.session.orderId}号订单详情</h4>
+			<p class="category">开单时间:{$Think.session.orderBeginDate},经手人：{$Think.session.userAccount}</p>
+		</div>
+		<div class="card-content table-responsive">
+			<table class="table table-hover">
+				<thead class="text-warning">
+				<th>ID</th>
+				<th>菜品名字</th>
+				<th>价格</th>
+				<th>数量</th>
+
+				</thead>
+				<tbody>
+				{volist name="cart" id="c"}
+				<tr>
+					<td>{$c.cartId}</td>
+					<td>{$c.dishesName}</td>
+					<td>{$c.dishesPrice}</td>
+					<td>{$c.num}</td>
+
+				</tr>
+				{/volist}
+				</tbody>
+			</table>
+			<hr/>
+			<h3>total：{$cart.price}元</h3><a href="{:url('order/orderAdd',['orderId'=>$Think.session.orderId,'price'=>$cart.price])}" class="btn btn-primary btn-round" data-background-color="green" style="width: 100%">确认订单</a>
+		</div>
+	</div>
+</div>

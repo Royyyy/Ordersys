@@ -1,10 +1,10 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1515606779;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\header.html";i:1515597443;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\footer.html";i:1515607050;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1517191832;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\header.html";i:1515597443;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\footer.html";i:1515607050;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="static/img/apple-icon.png" />
-    <link rel="icon" type="image/png" href="static/img/favicon.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png" />
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
     <title>点我点餐系统登录页面</title>
@@ -14,19 +14,19 @@
 
 
     <!-- Bootstrap core CSS     -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
 
     <!--  Material Dashboard CSS    -->
-    <link href="static/css/material-dashboard.css" rel="stylesheet"/>
+    <link href="/static/css/material-dashboard.css" rel="stylesheet"/>
 
     <!--  CSS for Demo Purpose, don't include it in your project     -->
-    <link href="static/css/demo.css" rel="stylesheet" />
+    <link href="/static/css/demo.css" rel="stylesheet" />
 
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <!--  <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'/> -->
 
-    <link href="static/css/material-icons.css" rel="stylesheet" />
+    <link href="/static/css/material-icons.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -47,7 +47,7 @@
 								<form action="<?php echo url('User/login'); ?>" method="post">
 									<div class="col-md-3">
 										<div class="form-group label-floating">
-											<label class="control-label">用户名</label>
+											<label class="control-label">用户名1111</label>
 											<input type="text" class="form-control" name="userAccount">
 										</div>
 									</div>
@@ -105,24 +105,24 @@
 //        });
     }
 </script>
-<script src="static/js/jquery-3.1.0.min.js" type="text/javascript"></script>
-<script src="static/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="static/js/material.min.js" type="text/javascript"></script>
+<script src="/static/js/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="/static/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/static/js/material.min.js" type="text/javascript"></script>
 
 <!--  Charts Plugin -->
-<script src="static/js/chartist.min.js"></script>
+<script src="/static/js/chartist.min.js"></script>
 
 <!--  Notifications Plugin    -->
-<script src="static/js/bootstrap-notify.js"></script>
+<script src="/static/js/bootstrap-notify.js"></script>
 
 <!--  Google Maps Plugin    -->
 <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script> -->
 
 <!-- Material Dashboard javascript methods -->
-<script src="static/js/material-dashboard.js"></script>
+<script src="/static/js/material-dashboard.js"></script>
 
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-<script src="static/js/demo.js"></script>
+<script src="/static/js/demo.js"></script>
 
 </html>
 

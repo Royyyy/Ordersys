@@ -161,8 +161,9 @@ class Dishes extends Controller
 		$dishes = model('Dishes');
 		$data = $dishes->select();
 		$sort = Db::table('dishessort')->select();
-		$this->assign('data',$data);
+
 		$this->assign('sort',$sort);
-		return view('menu');
+		$this->assign('data',$data);
+		return view();
 	}
 }

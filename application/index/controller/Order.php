@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 use think\Db;
 use think\Controller;
+use think\Session;
 
 class Order extends Controller
 {
@@ -34,9 +35,11 @@ class Order extends Controller
 		$result = $order->insert($data);
 		$orderId = $order->getLastInsID();
 		$result2 = Db::table('table')->where(['tableId' => $tableId])->update(['tableState'=>1]);
-		$this->assign('orderId',$orderId);
+		Session::set('orderBeginDate',date("Y-m-d H:i:s"));
+		Session::set('orderId',$orderId);
+
 		if ($result){
-			$this->success('选择桌子成功！您目前选择的是'+$orderId+'号桌子');
+			$this->success('选择桌子成功');
 		} else {
 			$this->error('选择桌子失败');
 		}
@@ -47,38 +50,62 @@ class Order extends Controller
 	 * 点餐功能
 	 * @param $orderData	菜单内容
 	 */
-	public function cartAdd($orderData){
+	public function orderAdd($orderId,$price){
 		$order = model('Order');
-		$orderId = $orderData['orderId'];
-		$result = Db::table('orderdishes')->insert($orderData);
-		if ($result) {
-			return 1;
+		$cart = Db::table('cart')->where(['orderId'=>$orderId])->field('orderId,dishes,num')->select();
+		$orderRes = $order->where(['orderId'=>$orderId])->Update(['price'=>$price]);
+		$result = Db::table('orderdishes')->insertAll($cart);
+		if ($result){
+			$cart = Db::table('cart')->where(['orderId'=>$orderId])->delete();
+			if ($cart){
+				$this->success('点餐成功');
+			}else{
+				$this->error('点餐失败');
+			}
 		}else{
-			return 2;
+			$this->error('点餐失败');
 		}
+
+//		$orderData = ['orderId'=>$orderId,'dishes'=>$dishes,'num'=>$num];
+//		$result = Db::table('orderdishes')->insert($orderData);
+
 	}
 
-	/**
-	 * 专门设置给外带的客人
-	 * @param $orderData
-	 */
-	public function orderWaiMai($waiterId){
-		$order = model('Order');
-		$orderBeginDate = strtotime(date("Y-m-d H:i:s"));
-		$data=[$orderBeginDate,$waiterId,0];
-		$result = $order->insert($data);
-		$orderId = $order->getLastInsID();
-		$this->assign('orderId',$orderId);
-		return view();
-	}
+
+//
+//	/**
+//	 * 专门设置给外带的客人
+//	 * @param $orderData
+//	 */
+//	public function orderWaiMai($waiterId){
+//		$order = model('Order');
+//		$orderBeginDate = strtotime(date("Y-m-d H:i:s"));
+//		$data=[$orderBeginDate,$waiterId,0];
+//		$result = $order->insert($data);
+//		$orderId = $order->getLastInsID();
+//		$this->assign('orderId',$orderId);
+//		return view();
+//	}
 
 	/**
 	 * 显示订单列表
 	 */
 	public function showOrder(){
-		$order = model('Order');
-		$data = $order->select();
-		return $this->fetch('showorder',['data'=>$data]);
+
+//		$data = $order->paginate(10);
+		$data = Db::table('order')->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->select();
+		for ($i=0;$i<count($data);$i++){
+			if ($data[$i]['orderState'] == 0){
+				$data[$i]['orderState'] = '未付款';
+			}elseif ($data[$i]['orderState'] == 1){
+				$data[$i]['orderState'] = '已付款';
+			}elseif ($data[$i]['orderState'] == 2){
+				$data[$i]['orderState'] = '免单';
+			}
+
+		}
+		$this->assign('data',$data);
+		return view();
 	}
 
 	/**
@@ -121,4 +148,30 @@ class Order extends Controller
 		return view('user/table');
 		//		return $this->fetch('user/table',['table'=>$table]);
 	}
+
+	/**
+	 * 点击菜品放进购物车功能
+	 * @param $dishes		菜品Id
+	 * @param $orderId		订单Id
+	 * @return \think\response\View
+	 */
+
+	public function cart($dishes,$orderId){
+		$result = Db::table('cart')->where(['dishes'=>$dishes,'orderId'=>$orderId])->select();
+		if ($result){
+			$result2 = Db::table('cart')->where(['dishes'=>$dishes,'orderId'=>$orderId])->setInc('num',1);
+		}else{
+			$data = ['dishes'=>$dishes,'orderId'=>$orderId,'num'=>1];
+			$result = Db::table('cart')->insert($data);
+		}
+		$result3 = Db::table('cart')->join('dishes d','cart.dishes = d.dishesId')->field('cart.*,d.dishesPrice,d.dishesName')->where(['orderId'=>$orderId])->select();
+		$dishesPrice = 0;
+		for ($i = 0;$i<count($result3);$i++){
+			$dishesPrice = $result3[$i]['dishesPrice']*$result3[$i]['num']+$dishesPrice;
+		}
+		$result3['price'] = $dishesPrice;
+		$this->assign('cart',$result3);
+		return view();
+	}
+
 }

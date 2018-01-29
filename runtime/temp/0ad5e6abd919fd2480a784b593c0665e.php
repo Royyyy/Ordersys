@@ -1,4 +1,7 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"E:\wamp64\www\Ordersys\public/../application/index\view\user\user.html";i:1516165227;}*/ ?>
 
+
+<div class="content">
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-8">
@@ -97,7 +100,7 @@
 				<div class="card card-profile">
 					<div class="card-avatar">
 						<a href="#pablo">
-							<img class="img" src="__DIR__img/faces/marc.jpg" />
+							<img class="img" src="/static/img/faces/marc.jpg" />
 						</a>
 					</div>
 
@@ -113,5 +116,7 @@
 			</div>
 		</div>
 	</div>
+</div>
+
 
 

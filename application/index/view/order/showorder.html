@@ -1,0 +1,37 @@
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">订单列表</h4>
+					</div>
+					<div class="card-content table-responsive">
+						<table class="table">
+							<thead class="text-primary">
+							<th>订单号</th>
+							<th>经手人</th>
+							<th>总价</th>
+							<th>订单状态</th>
+							<th>操作</th>
+							</thead>
+							<tbody>
+								{volist name="data" id="vo"}
+									<tr>
+										<td>{$vo.orderId}</td>
+										<td>{$vo.userAccount}</td>
+										<td class="text-primary">${$vo.price}</td>
+										<td> {$vo.orderState}</td>
+
+									</tr>
+								{/volist}
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
