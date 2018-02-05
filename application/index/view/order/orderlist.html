@@ -1,0 +1,63 @@
+<div class="content" id="uid">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">已付款订单列表</h4>
+					</div>
+					<div class="card-content table-responsive">
+						<table class="table">
+							<thead class="text-primary">
+							<th>订单号</th>
+							<th>经手人</th>
+							<th>总价</th>
+							<th>结单时间</th>
+							<th>订单状态</th>
+							<th>操作</th>
+							</thead>
+							<tbody>
+								{volist name="data" id="vo"}
+									<tr>
+										<td>{$vo.orderId}</td>
+										<td>{$vo.userAccount}</td>
+										<td class="text-primary">${$vo.price}</td>
+										<td>{$vo.orderEndDate|date="Y-m-d H:i",###}</td>
+										{if condition="$vo.orderState eq 1"}<td>已付款</td>
+										{elseif condition="$vo.orderState eq 2"/}<td>免单</td>
+										{/if}
+										<td><a id="{$vo.orderId}"><img src="__STATIC__img/liulan.png" style="height: 30px;width: 40px;" onclick="doit('{$vo.orderId}')"></a></td>
+									</tr>
+								{/volist}
+
+							</tbody>
+
+						</table>
+						<div>
+							{$page}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    $(".content").on("click",".pagination a",function(){
+        var url=$(this).attr("data-page");
+
+        getPage(url);
+    });
+    function getPage(url)
+    {
+        $.get(url, function(result){
+            $(".content").html(result);
+
+        });
+	}
+
+    function doit(orderId) {
+        var url = "{:url('order/orderDetail')}";
+        $("#uid").load(url,{"orderId" : orderId});
+    }
+</script>

@@ -1,8 +1,8 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:71:"E:\wamp64\www\Ordersys\public/../application/index\view\order\cart.html";i:1517221722;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:71:"E:\wamp64\www\Ordersys\public/../application/index\view\order\cart.html";i:1517840300;}*/ ?>
 
 <div class="col-lg-4 col-md-12" style="position: absolute;left: 66%;">
 	<div class="card">
-		<div class="card-header" data-background-color="green">
+		<div class="card-header" data-background-color="purple">
 			<h4 class="title"><?php echo \think\Session::get('orderId'); ?>号订单详情</h4>
 			<p class="category">开单时间:<?php echo \think\Session::get('orderBeginDate'); ?>,经手人：<?php echo \think\Session::get('userAccount'); ?></p>
 		</div>
@@ -28,7 +28,7 @@
 				</tbody>
 			</table>
 			<hr/>
-			<h3>total：<?php echo $cart['price']; ?>元</h3><a href="<?php echo url('order/orderAdd',['orderId'=>\think\Session::get('orderId'),'price'=>$cart['price']]); ?>" class="btn btn-primary btn-round" data-background-color="green" style="width: 100%">确认订单</a>
+			<h3>total：<?php echo $cart['price']; ?>元</h3><a href="<?php echo url('order/orderAdd',['orderId'=>\think\Session::get('orderId'),'price'=>$cart['price']]); ?>" class="btn btn-primary btn-round" data-background-color="purple" style="width: 100%">确认订单</a>
 		</div>
 	</div>
 </div>

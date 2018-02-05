@@ -1,0 +1,73 @@
+<div class="content" id="uid">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    {volist name="data" id="vo"}
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">{$vo.orderId}号订单详情</h4>
+                        <p class="category">时间:{$vo.orderBeginDate|date="Y-m-d H:i",###}~{$vo.orderEndDate|date="Y-m-d H:i",###},经手人：{$vo.userAccount}</p>
+                    </div>
+                    <div class="card-content table-responsive">
+                        <table class="table table-hover">
+                            <thead class="text-primary">
+                            <th>ID</th>
+                            <th>菜品名字</th>
+                            <th>价格</th>
+                            <th>数量</th>
+                            <th>操作</th>
+
+                            </thead>
+                            <tbody>
+                            {volist name="dishes" id="d"}
+                            {if condition="$d.state eq 0"}
+                            <tr id="tr_{$d.odId}">
+                                <td>{$d.odId}</td>
+                                <td>{$d.dishesName}</td>
+                                <td>${$d.dishesPrice}</td>
+                                <td>{$d.num}</td>
+                                <td><a><img src="__STATIC__img/cook.png" style="height: 40px;width: 50px;" onclick="disp_confirm('{$d.odId}')"></a></td>
+                            </tr>
+                            {/if}
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function disp_confirm(odId) {
+
+        var r = confirm('菜品烹饪完成？');
+        if (r == true)
+        {
+            result = cdsReg(odId);
+            if (result){
+
+            }else{
+
+            }
+        } else {}
+    }
+
+    function cdsReg(odId){
+        $.ajax({
+            type:'post',
+            url:"{:url('order/changeDishesState')}",
+            data:{
+                "odId":odId
+            },
+            success:function(data){
+                if(data==1){
+                    alert("完成");
+                    $("#tr_"+odId).remove();//主要就是这个删除成功后移除这行数据
+                }
+            }
+
+        })
+    }
+</script>

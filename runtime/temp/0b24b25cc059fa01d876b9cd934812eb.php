@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:77:"E:\wamp64\www\Ordersys\public/../application/index\view\user\server_main.html";i:1517206436;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:77:"E:\wamp64\www\Ordersys\public/../application/index\view\user\server_main.html";i:1517839816;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -81,19 +81,7 @@
 
                         </a>
                     </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/static/img/message.png"/>
 
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Mike John responded to your email</a></li>
-                                <li><a href="#">You have 5 new tasks</a></li>
-                                <li><a href="#">You're now friend with Andrew</a></li>
-                                <li><a href="#">Another Notification</a></li>
-                                <li><a href="#">Another One</a></li>
-                            </ul>
-                        </li>
                         <li data-id="Per">
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="/static/img/person.png"/>
@@ -129,7 +117,7 @@
             switch(sId){
                 case "#Table": pathn = "<?php echo url('order/showTableState'); ?>"; i = 0; break;
                 case "#Menu": pathn = "<?php echo url('dishes/menu'); ?>"; i = 1; break;
-                case "#Per": pathn = "<?php echo url('order/showTableState'); ?>";i=2; break;
+                case "#Per": pathn = "<?php echo url('user/userDetail',['userId'=>\think\Session::get('userId')]); ?>";i=3; break;
 
                 default:  break;
             }

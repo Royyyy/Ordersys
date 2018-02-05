@@ -11,6 +11,7 @@ namespace app\index\controller;
 use think\Db;
 use think\Controller;
 use think\Session;
+use think\paginator;
 
 class Order extends Controller
 {
@@ -50,11 +51,18 @@ class Order extends Controller
 	 * 点餐功能
 	 * @param $orderData	菜单内容
 	 */
-	public function orderAdd($orderId,$price){
+	public function orderAdd($orderId,$price)
+	{
 		$order = model('Order');
-		$cart = Db::table('cart')->where(['orderId'=>$orderId])->field('orderId,dishes,num')->select();
-		$orderRes = $order->where(['orderId'=>$orderId])->Update(['price'=>$price]);
+		$cart = Db::table('cart')->where(['orderId' => $orderId])->field('orderId,dishes,num')->select();
+		$data = $order->where(['orderId' => $orderId])->select();
+		$orderPrice = $data[0]['price']+$price;
+		$orderRes = $order->where(['orderId' => $orderId])->Update(['price' => $orderPrice]);
+		for ($i = 0; $i < count($cart); $i++) {
+			$cart[$i]['state'] = 0;
+		}
 		$result = Db::table('orderdishes')->insertAll($cart);
+
 		if ($result){
 			$cart = Db::table('cart')->where(['orderId'=>$orderId])->delete();
 			if ($cart){
@@ -72,71 +80,131 @@ class Order extends Controller
 	}
 
 
-//
-//	/**
-//	 * 专门设置给外带的客人
-//	 * @param $orderData
-//	 */
-//	public function orderWaiMai($waiterId){
-//		$order = model('Order');
-//		$orderBeginDate = strtotime(date("Y-m-d H:i:s"));
-//		$data=[$orderBeginDate,$waiterId,0];
-//		$result = $order->insert($data);
-//		$orderId = $order->getLastInsID();
-//		$this->assign('orderId',$orderId);
-//		return view();
-//	}
 
-	/**
-	 * 显示订单列表
-	 */
+
 	public function showOrder(){
+		$count = Db::table('order')->count();
+		$data = Db::table('order')->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->order('orderId DESC')->where('orderState',0)->paginate(5,$count, ['type' => 'BootstrapAjax', 'var_page' => 'page', 'path'=>url('order/showOrder')]);
 
-//		$data = $order->paginate(10);
-		$data = Db::table('order')->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->select();
-		for ($i=0;$i<count($data);$i++){
-			if ($data[$i]['orderState'] == 0){
-				$data[$i]['orderState'] = '未付款';
-			}elseif ($data[$i]['orderState'] == 1){
-				$data[$i]['orderState'] = '已付款';
-			}elseif ($data[$i]['orderState'] == 2){
-				$data[$i]['orderState'] = '免单';
-			}
-
-		}
+		$time = date("Y-m-d H:i:s");
+		$list = $data->render();
+//		$this->assign('page',$show);
 		$this->assign('data',$data);
+		$this->assign('page',$list);
+		$this->assign('time',$time);
+//		$this->assign('list',$list);
 		return view();
 	}
 
+	public function showOrderChef(){
+		$count = Db::table('order')->count();
+		$data = Db::table('order')->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->order('orderId DESC')->where('orderState',0)->paginate(5,$count, ['type' => 'BootstrapAjax', 'var_page' => 'page', 'path'=>url('order/showOrder')]);
+
+		$time = date("Y-m-d H:i:s");
+		$list = $data->render();
+//		$this->assign('page',$show);
+		$this->assign('data',$data);
+		$this->assign('page',$list);
+		$this->assign('time',$time);
+//		$this->assign('list',$list);
+		return view();
+
+	}
 	/**
 	 * 查看订单详细情况
 	 * @param $orderId		订单id
 	 */
 	public function orderDetail($orderId){
 		$order = model('Order');
-		$data = $order->where(['orderId' => $orderId])->select();
+		$data = $order->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->order('orderId DESC')->where(['orderId' => $orderId])->select();
+
+		$result3 = Db::table('orderdishes')->join('dishes d','orderdishes.dishes = d.dishesId')->field('orderdishes.*,d.dishesPrice,d.dishesName')->where(['orderId'=>$orderId])->select();
+
+		$time = date("Y-m-d H:i:s");
 		$this->assign('data',$data);
+		$this->assign('time',$time);
+		$this->assign('dishes',$result3);
+		return view();
+	}
+
+	public function orderDetailChef($orderId){
+		$order = model('Order');
+		$data = $order->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->order('orderId DESC')->where(['orderId' => $orderId])->select();
+
+		$result3 = Db::table('orderdishes')->join('dishes d','orderdishes.dishes = d.dishesId')->field('orderdishes.*,d.dishesPrice,d.dishesName')->where(['orderId'=>$orderId])->select();
+
+		$time = date("Y-m-d H:i:s");
+		$this->assign('data',$data);
+		$this->assign('time',$time);
+		$this->assign('dishes',$result3);
 		return view();
 	}
 
 	/**
-	 * 订单结单功能(0-正在用餐，1-准备结账，2-已经结账，3-免单订单)
-	 * @param $orderId		订单id
-	 * @param $orderState	订单状态
+	 * 后厨完成烹饪修改所定菜品的状态
 	 */
-	public function orderEnd($orderId,$orderState){
-		$order = model('Order');
-		$result = $order->where('orderId',$orderId)->update('orderState',$orderState);
-		$tableId = $order->where('orderId',$orderId)->select('tableId');
-		$result2 = Db::table('table')->where(['tableId' => $tableId])->update('tableState',1);
-		if ($result != 0) {
-			$this->success('订单结单成功');
-		} else {
-			$this->error('订单结单失败');
+	public function changeDishesState($odId){
+		$result = Db::table('orderdishes')->where('odId',$odId)->update(['state'=>1]);
+		if ($result != 0){
+			echo 1;
+		}else{
+			echo 2;
 		}
+
+	}
+	/**已付款账单总列表
+	 * @return \think\response\View
+	 */
+	public function orderList(){
+
+		$count = Db::table('order')->count();
+		$data = Db::table('order')->join('user u','order.waiterId = u.userId')->field('order.*,u.userAccount')->order('orderId DESC')->where('orderState = 1 OR orderState=2')->paginate(5,$count, ['type' => 'BootstrapAjax', 'var_page' => 'page', 'path'=>url('order/orderList')]);
+		$list = $data->render();
+		$time = date("Y-m-d H:i:s");
+		$this->assign('data',$data);
+		$this->assign('page',$list);
+		$this->assign('time',$time);
+		return view();
+
+
 	}
 
 
+	/**
+	 * 订单付款状态修改pay
+	 * @param $orderId
+	 */
+	public function orderPay($orderId){
+		$order = model('Order');
+		$time = strtotime(date("Y-m-d H:i:s"));
+		$result = $order->where('orderId',$orderId)->update(['orderState'=>1,'orderEndDate'=>$time]);
+		$data = $order->where('orderId',$orderId)->select();
+		$result2 = Db::table('table')->where(['tableId' => $data[0]['tableId']])->update(['tableState'=>0]);
+		if ($result != 0) {
+			echo 1;
+		}else{
+//			$result = "失败";
+			echo 2;
+		}
+	}
+
+	/**
+	 * 订单付款状态修改free
+	 * @param $orderId
+	 */
+	public function orderFree($orderId){
+		$order = model('Order');
+		$time = strtotime(date("Y-m-d H:i:s"));
+		$result = $order->where('orderId',$orderId)->update(['orderState'=>2,'orderEndDate'=>$time]);
+		$data = $order->where('orderId',$orderId)->select();
+		$result2 = Db::table('table')->where(['tableId' => $data[0]['tableId']])->update(['tableState'=>0]);
+		if ($result != 0) {
+			echo 1;
+		}else{
+//			$result = "失败";
+			echo 2;
+		}
+	}
 
 	/**
 	 * 通过订单的状态来判断是否为空桌子

@@ -52,6 +52,7 @@ return [
     'class_suffix'           => false,
     // 控制器类后缀
     'controller_suffix'      => false,
+	'auto_timestamp' 		 => false,
 
     // +----------------------------------------------------------------------
     // | 模块设置
@@ -296,7 +297,8 @@ return [
 	'view_replace_str'  =>[
 		'__PUBLIC__' => 'public/',
 		'__DIR__'    => '/',
-		'__STATIC__'    => '/static/'
+		'__STATIC__'    => '/static/',
+		'__UPLOAD__' => '/public/'
 	],
 
 	'session'        =>[

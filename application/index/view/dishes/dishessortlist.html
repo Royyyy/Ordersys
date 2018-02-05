@@ -1,0 +1,85 @@
+<div class="content" id="uid">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">菜品分类列表</h4>
+					</div>
+					<div class="card-content table-responsive">
+						<table class="table">
+							<thead class="text-primary">
+							<th>编号</th>
+							<th>菜名分类类名</th>
+							<th>操作</th>
+							</thead>
+							<tbody>
+							{volist name="data" id="vo"}
+							<tr id="tr_{$vo.dsId}">
+								<td>{$vo.dsId}</td>
+								<td>{$vo.dsName}</td>
+								<td><a id="{$vo.dsId}"><img src="__STATIC__img/liulan.png" style="height: 30px;width: 40px;" onclick="doit('{$vo.dsId}')"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="{$vo.dsId}"><img src="__STATIC__img/close.png" style="height: 30px;width: 40px;" onclick="disp_confirm('{$vo.dsId}')"></a> </td>
+
+							</tr>
+							{/volist}
+							</tbody>
+						</table>
+						<div>
+							{$page}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    $(".content").on("click",".pagination a",function(){
+        var url=$(this).attr("data-page");
+
+        getPage(url);
+    });
+    function getPage(url)
+    {
+        $.get(url, function(result){
+            $(".content").html(result);
+
+        });
+    }
+    function doit(dsId) {
+        var url = "{:url('dishes/manDishesSortDetail')}";
+        $("#uid").load(url,{"dsId" : dsId});
+    }
+
+    function disp_confirm(dsId) {
+
+        var r = confirm('你确定要删除数据吗？');
+        if (r == true)
+        {
+            result = deleteReg(dsId);
+            if (result){
+
+            }else{
+
+            }
+        } else {}
+    }
+
+    function deleteReg(dsId){
+        $.ajax({
+            type:'post',
+            url:"{:url('dishes/dishesSortDel')}",
+            data:{
+                "dsId":dsId
+            },
+            success:function(data){
+                if(data==1){
+                    alert("删除成功");
+                    $("#tr_"+dsId).remove();//主要就是这个删除成功后移除这行数据
+                }
+            }
+
+        })
+    }
+</script>
+

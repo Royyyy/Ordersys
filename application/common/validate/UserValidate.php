@@ -15,10 +15,10 @@ class UserValidate
 		['verify', 'check_verify:thinkphp', '验证码错误']
 	];
 
-
 	// 自定义规则
 	public function check_verify($value)
 	{
-		return VerifyHelper::check($value) ? true : false;
+		$captcha	=	new	VerifyHelper();
+		return	$captcha->check($value);
 	}
 }

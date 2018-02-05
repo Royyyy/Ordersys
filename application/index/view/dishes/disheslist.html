@@ -1,51 +1,99 @@
-{include file="index/header" /}
-		<div class="content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-md-8">
-						<div class="card">
-							<div class="card-header" data-background-color="purple">
-								<h4 class="title">登陆界面</h4>
-								<p class="category">欢迎来到点我点餐系统</p>
-							</div>
-							<thead>
-							<tr>
-								<th>菜品编号
-								<th>菜品名称
-								<th>菜品简介
-								<th>菜品图片
-								<th>菜品详情
-								<th>是否推荐
-								<th>菜品单价
-								<th>菜品类别编号
-								<th>菜品类别
-							</th>
+<div class="content" id="uid">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">菜品列表</h4>
+					</div>
+					<div class="card-content table-responsive">
+						<table class="table">
+							<thead class="text-primary">
+							<th>编号</th>
+							<th>菜名</th>
+							<th>图片</th>
+							<th>是否推荐菜</th>
+							<th>价格</th>
+							<th>菜品分类</th>
+							<th>操作</th>
 							</thead>
-
-
+							<tbody>
 							{volist name="data" id="vo"}
-							<tr>
-								<td>{$vo.dishesId}
-								<td>{$vo.dishesName}
-								<td>{$vo.dishesDiscript}
-								<td>{$vo.dishesImg}
-								<td>{$vo.dishesTxt}
-								<td>{$vo.recommend}
-								<td>{$vo.dishesPrice}
-								<td>{$vo.dsId}
-								<td>{$vo.dsName}
-
-
+							<tr id="tr_{$vo.dishesId}">
+								<td>{$vo.dishesId}</td>
+								<td>{$vo.dishesName}</td>
+								{if condition="$vo.dishesImg eq null"}
+								<td><img src="__STATIC__img/dishes.png" style="width: 120px;height: 80px;padding: 10px" ></td>
+								{else/}
+								<td><img src="__DIR__{$vo.dishesImg}" style="width: 120px;height: 80px;padding: 10px" ></td>
+								{/if}
+								{if condition="$vo.recommend eq 0"}
+								<td>否</td>
+								{else/}
+								<td>是</td>
+								{/if}
+								<td class="text-primary">${$vo.dishesPrice}</td>
+								<td >{$vo.dsName}</td>
+								<td><a id="{$vo.dishesId}"><img src="__STATIC__img/liulan.png" style="height: 30px;width: 40px;" onclick="doit('{$vo.dishesId}')"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="{$vo.dishesId}"><img src="__STATIC__img/close.png" style="height: 30px;width: 40px;" onclick="disp_confirm('{$vo.dishesId}')"></a> </td>
 
 							</tr>
 							{/volist}
-
+							</tbody>
+						</table>
+						<div>
+							{$page}
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+<script>
+    $(".content").on("click",".pagination a",function(){
+        var url=$(this).attr("data-page");
 
+        getPage(url);
+    });
+    function getPage(url)
+    {
+        $.get(url, function(result){
+            $(".content").html(result);
 
-{include file="index/footer" /}
+        });
+    }
+    function doit(dishesId) {
+        var url = "{:url('dishes/manDishesDetail')}";
+        $("#uid").load(url,{"dishesId" : dishesId});
+    }
+    function disp_confirm(dishesId) {
+
+        var r = confirm('你确定要删除数据吗？');
+        if (r == true)
+        {
+            result = deleteReg(dishesId);
+            if (result){
+
+            }else{
+
+            }
+        } else {}
+    }
+
+    function deleteReg(dishesId){
+        $.ajax({
+            type:'post',
+            url:"{:url('dishes/dishesDel')}",
+            data:{
+                "dishesId":dishesId
+            },
+            success:function(data){
+                if(data==1){
+                    alert("删除成功");
+                    $("#tr_"+dishesId).remove();//主要就是这个删除成功后移除这行数据
+                }
+            }
+
+        })
+    }
+</script>

@@ -44,20 +44,7 @@
 
         <div class="sidebar-wrapper">
             <ul class="nav" id="nav">
-                <li data-id="Table">
-                    <a>
-
-                        <p>桌子</p>
-                    </a>
-                </li>
-                <li  data-id="Menu">
-                    <a>
-
-                        <p>菜单</p>
-                    </a>
-                </li>
-
-                <li class="active-pro" data-id="Order">
+                <li data-id="Order">
                     <a>
                         <p>订单列表</p>
                     </a>
@@ -86,19 +73,7 @@
 
                             </a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="__STATIC__img/message.png"/>
 
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Mike John responded to your email</a></li>
-                                <li><a href="#">You have 5 new tasks</a></li>
-                                <li><a href="#">You're now friend with Andrew</a></li>
-                                <li><a href="#">Another Notification</a></li>
-                                <li><a href="#">Another One</a></li>
-                            </ul>
-                        </li>
                         <li data-id="Per">
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="__STATIC__img/person.png"/>
@@ -132,9 +107,9 @@
             var sId = window.location.hash;
             var pathn, i;
             switch(sId){
-                case "#Table": pathn = "{:url('order/showTableState')}"; i = 0; break;
-                case "#Menu": pathn = "{:url('dishes/menu')}"; i = 1; break;
-                case "#Per": pathn = "{:url('order/showTableState')}"; i = null; break;
+                case "#Order": pathn = "{:url('order/showOrderChef')}"; i = 0; break;
+
+                case "#Per": pathn = "{:url('user/userDetail',['userId'=>$Think.session.userId])}"; i = 3; break;
 
                 default:  break;
             }

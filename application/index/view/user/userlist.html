@@ -1,0 +1,69 @@
+<div class="content" id="uid">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">用户列表</h4>
+					</div>
+					<div class="card-content table-responsive">
+						<table class="table">
+							<thead class="text-primary">
+							<th>编号</th>
+							<th>用户名</th>
+							<th>头像</th>
+							<th>职位</th>
+							<th>操作</th>
+							</thead>
+							<tbody>
+								{volist name="data" id="vo"}
+									<tr>
+										<td>{$vo.userId}</td>
+										<td>{$vo.userAccount}</td>
+										{if condition="$vo.faceImg eq null"}
+										<td><img src="__STATIC__img/person.png" style="width: 120px;height: 80px;padding: 10px" ></td>
+										{else/}
+										<td><img src="__DIR__{$vo.faceImg}" style="width: 120px;height: 80px;padding: 10px" ></td>
+										{/if}
+										<td class="text-primary">{$vo.roleName}</td>
+										<td><a id="{vo.userId}"><img src="__STATIC__img/liulan.png" style="height: 30px;width: 40px;" onclick="doit('{$vo.userId}')"></a></td>
+
+									</tr>
+								{/volist}
+							</tbody>
+						</table>
+						<div>
+							{$page}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    $(".content").on("click",".pagination a",function(){
+        var url=$(this).attr("data-page");
+
+        getPage(url);
+    });
+    function getPage(url)
+    {
+        $.get(url, function(result){
+            $(".content").html(result);
+
+        });
+    }
+    function doit(userId) {
+        var url = "{:url('user/manuserDetail')}";
+        $("#uid").load(url,{"userId" : userId});
+    }
+
+</script>
+<!--<script>-->
+	<!--function page(page) {-->
+		<!--$.get("{:url('user/userList')}",{page:page},function (data) {-->
+			<!--$('#uid').html(data);-->
+        <!--});-->
+    <!--}-->
+<!--</script>-->

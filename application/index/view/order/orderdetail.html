@@ -1,0 +1,40 @@
+<div class="content" id="uid">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    {volist name="data" id="vo"}
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">{$vo.orderId}号订单详情</h4>
+                        <p class="category">时间:{$vo.orderBeginDate|date="Y-m-d H:i",###}~{$vo.orderEndDate|date="Y-m-d H:i",###},经手人：{$vo.userAccount}</p>
+                    </div>
+                    <div class="card-content table-responsive">
+                        <table class="table table-hover">
+                            <thead class="text-warning">
+                            <th>ID</th>
+                            <th>菜品名字</th>
+                            <th>价格</th>
+                            <th>数量</th>
+                            <th>操作</th>
+
+                            </thead>
+                            <tbody>
+                            {volist name="dishes" id="d"}
+                            <tr>
+                                <td>{$d.odId}</td>
+                                <td>{$d.dishesName}</td>
+                                <td>${$d.dishesPrice}</td>
+                                <td>{$d.num}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <h3>total：{$vo.price}元</h3>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

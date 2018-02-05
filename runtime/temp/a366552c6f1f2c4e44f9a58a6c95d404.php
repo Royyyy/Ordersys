@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:78:"E:\wamp64\www\Ordersys\public/../application/index\view\user\manager_main.html";i:1517208431;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:78:"E:\wamp64\www\Ordersys\public/../application/index\view\user\manager_main.html";i:1517839761;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,7 +26,7 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <!--  <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'/> -->
 
-    <link href="/static/css/material-icons.css" rel="stylesheet" />
+
 </head>
 <body>
 <div class="wrapper">
@@ -47,18 +47,44 @@
             <ul class="nav" id="nav">
                 <li data-id="Order">
                     <a>
-
-                        <p>账单管理</p>
+                        <p>账单列表</p>
                     </a>
                 </li>
                 <li  data-id="User">
                     <a>
-
-                        <p>用户信息管理</p>
+                        <p>用户信息列表</p>
                     </a>
                 </li>
-
-
+                <li  data-id="Dishes">
+                    <a>
+                        <p>菜单</p>
+                    </a>
+                </li>
+                <li  data-id="Dishessort">
+                    <a>
+                        <p>菜品分类列表</p>
+                    </a>
+                </li>
+                <li  data-id="Useradd">
+                    <a>
+                        <p>添加用户</p>
+                    </a>
+                </li>
+                <li  data-id="Dishesadd">
+                    <a>
+                        <p>添加菜品</p>
+                    </a>
+                </li>
+                <li  data-id="Sortadd">
+                    <a>
+                        <p>添加菜品分类</p>
+                    </a>
+                </li>
+                <li  data-id="Orderlist" class="active-pro">
+                    <a>
+                        <p>账单</p>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -83,19 +109,7 @@
 
                             </a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/static/img/message.png"/>
 
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Mike John responded to your email</a></li>
-                                <li><a href="#">You have 5 new tasks</a></li>
-                                <li><a href="#">You're now friend with Andrew</a></li>
-                                <li><a href="#">Another Notification</a></li>
-                                <li><a href="#">Another One</a></li>
-                            </ul>
-                        </li>
                         <li data-id="Per">
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="/static/img/person.png"/>
@@ -130,7 +144,14 @@
             var pathn, i;
             switch(sId){
                 case "#Order": pathn = "<?php echo url('order/showOrder'); ?>"; i = 0; break;
-                case "#User": pathn = "<?php echo url('dishes/menu'); ?>"; i = 1; break;
+                case "#User": pathn = "<?php echo url('user/userList'); ?>"; i = 1; break;
+                case "#Dishes": pathn = "<?php echo url('dishes/dishesList'); ?>"; i = 2; break;
+                case "#Dishessort": pathn = "<?php echo url('dishes/dishesSortList'); ?>"; i = 3; break;
+                case "#Useradd": pathn = "<?php echo url('user/userAdd'); ?>"; i = 4; break;
+                case "#Dishesadd": pathn = "<?php echo url('dishes/dishesAddView'); ?>"; i = 5; break;
+                case "#Sortadd": pathn = "<?php echo url('dishes/dishesSortAddView'); ?>"; i = 6; break;
+                case "#Orderlist": pathn = "<?php echo url('order/orderList'); ?>"; i = 7; break;
+                case "#Per": pathn = "<?php echo url('user/userDetail',['userId'=>\think\Session::get('userId')]); ?>"; i = 8; break;
 
 
                 default:  break;

@@ -11,7 +11,7 @@ namespace app\index\controller;
 use think\Db;
 use think\Controller;
 use app\common\helper\VerifyHelper;
-
+use app\common\validate\UserValidate;
 use think\Session;
 
 class User extends Controller
@@ -40,14 +40,22 @@ class User extends Controller
 		VerifyHelper::verify();
 	}
 
+	public function checkCap($verifyres){
+		$result_cap = VerifyHelper::check($verifyres);
+		if ($result_cap) {
+//			$result = "可以使用该用户名";
+			echo true;
+		}else{
+//			$result = "用户名已存在";
+			echo false;
+		}
+	}
 	public function login(){
 		$data = input('post.');
 		$userAccount = $data['userAccount'];
 		$userPass = $data['userPass'];
-//		$result = $this->validate($data, 'UserValidate','','','');
-//		if(is_array($result)) {
-//			return $this->error('登录失败', ['valid' => $result]);
-//		}
+		$verifyres = $data['verify'];
+
 		$user = Model('User');
 
 		if ($user->where(['userAccount' => $userAccount])->find() != NULL) {
@@ -76,56 +84,88 @@ class User extends Controller
 
 	}
 
+
 	/**
 	 * 用户注册
 	 * @return [type] [description]
 	 */
-	public function register(){
-
-		$data = input('post.');
-
-		$user = model('User');
-		// //数据保存
-		// //数据验证
-		// $validate = validate('userV');
-		// if(!$validate->check($data)){
-		//    dump($validate->getError());
-		// }
-		$result = $user->insert($data);
-		if ($result) {
-			# code...
-			$this->success('注册成功！！');
+	public function register($userAccount){
+		$user = model('user');
+		$result = $user->where('userAccount',$userAccount)->find();
+		if (!$result) {
+//			$result = "可以使用该用户名";
+			echo true;
 		}else{
-			$this->error('注册失败！！');
+//			$result = "用户名已存在";
+			echo false;
 		}
 	}
 
+	public function userAdd(){
+		$role = Db::table('roleinfo')->select();
+		$this->assign('role',$role);
+		return view();
+	}
 	/**
 	 * 用户修改自身信息功能
-	 * @param $userData		修改内容
+	 * @param 		修改内容
 	 */
-	public function updateUserInfo($data){
-		$userID = $data['userId'];
-
-		$user = model('User');
-		$result = $user->where('userId',$userID)
-			->update(['faceImg'       =>  $data['faceImg']]);
-		if ($result != 0){
-			$this->success('修改个人信息成功');
-		}else{
-			$this->error('修改个人信息失败');
-		}
-	}
-
-	public function changeUserPwd($userId){
+	public function updateUserInfo()
+	{
 		$data = input('post.');
-		$userPass = $data['userPass'];
 		$user = model('User');
-		$result = $user->where('userId',$userId)->update(['userPass' => $userPass]);
-		if ($result != 0) {
-			$this->success('修改密码成功');
-		}else{
-			$this->error('修改密码失败');
+		$file = request()->file('faceImg');
+		if (isset($file)) {
+			// 获取表单上传文件 例如上传了001.jpg
+			// 移动到框架应用根目录/public/uploads/ 目录下
+			$info = $file->validate(['size' => 1567118, 'ext' => 'jpg,png,gif,jpeg'])->rule('date')->move(ROOT_PATH . 'public/uploads/face');
+//       var_dump($info) ;die;
+			if ($info) {
+				// 成功上传后 获取上传信息
+				$a = $info->getSaveName();
+				$imgp = str_replace("\\", "/", $a);
+				$imgpath = 'uploads/face/' . $imgp;
+				$data['faceImg'] = $imgpath;
+				//上传成功提示成功信息
+//				$this->success('上传成功');
+
+			} else {
+				// 上传失败获取错误信息
+				echo $file->getError();
+			}
+
+			if ($data['userPass'] != null) {
+				$result = $user->where('userId', $data['userId'])
+					->update(['userPass' => $data['userPass'], 'faceImg' => $data['faceImg']]);
+
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+			} elseif ($data['userPass'] == null) {
+				$result = $user->where('userId', $data['userId'])
+					->update(['faceImg' => $data['faceImg']]);
+
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+			}
+		} else {
+			if ($data['userPass'] != null) {
+				$result = $user->where('userId', $data['userId'])
+					->update(['userPass' => $data['userPass']]);
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+
+			} else {
+				$this->error('修改个人信息失败,原因没有检测到修改过的信息');
+			}
 		}
 	}
 
@@ -141,11 +181,58 @@ class User extends Controller
 	/**
 	 * 用户列表功能
 	 */
+//	public function userList(){
+//
+//		$user = model('User');
+//		$count = $user->count();
+//		$limit = 5;
+//		$total = intval(ceil($count/$limit))+1;//进1取整，计算多少页
+//		$paging = array();
+//		for ($i = 0;$i < $total;$i++){
+//			$paging[$i]=$i;
+//		}//页码
+//		$page = isset($_GET['page'])?$_GET['page']:"";
+//		if (empty($page)){
+//			$page = 1;
+//		}//前台传过来的页码
+//		$offset = ($page-1)*$limit;//偏移量
+//
+////		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->where('u.role = r.roleId')->select();
+//		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->limit($offset,$limit)->select();
+////		if (request()->isAjax()){ //如果是AJAX请求的分页
+////			$this->assign('data',$data);
+////			return view('user/userListAjax');
+////			exit;
+////		}
+//		//非Ajax请求
+//		$this->assign('paging',$paging);
+//		$this->assign('data',$data);
+//
+//		return view();
+////		$this->assign('data',$data);
+////		return view();
+/// 	<!--<div class="pagination" >-->
+//<!--{volist name="paging" id="value"}-->
+//							<!--<li>-->
+//								<!--<a href="javascript:void(0)" onclick="page('{$value}')" class="padropdown-toggleger">-->
+//									<!--{if condition="$value eq '0'"}首页-->
+//									<!--{else/}{$value}-->
+//									<!--{/if}-->
+//								<!--</a>-->
+//							<!--</li>-->
+//						<!--{/volist}-->
+//					<!--</div>-->
+//	}
+
 	public function userList(){
 		$user = model('User');
-		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->where('u.role = r.roleId')->select();
+		$count = $user->count();
+		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->paginate(5,$count, ['type' => 'BootstrapAjax', 'var_page' => 'page', 'path'=>url('user/userList')]);;
+		$list = $data->render();
+		$this->assign('data',$data);
+		$this->assign('page',$list);
 
-		return $this->fetch('showlist',['data'=>$data]);
+		return view();
 	}
 
 	/**
@@ -177,32 +264,93 @@ class User extends Controller
 //		}
 //	}
 
-//	/**
-//	 * 添加用户功能
-//	 * @param $userData		用户信息
-//	 */
-//	public function userAdd($userData){
-//
-//	}
 
 	/**
 	 * 管理员修改用户信息功能
 	 * @param $userData		用户信息
 	 */
-	public function changeUserInfo($userData)
+	public function changeUserInfo()
 	{
-		$userID = $userData['userId'];
-
+		$data = input('post.');
+		
 		$user = model('User');
-		$result = $user->where('userId', $userID)
-			->update(['faceImg' => $userData['faceImg'], 'role' => $userData['role']]);
-		if ($result != 0) {
-			$this->success('修改信息成功');
-		} else {
-			$this->error('修改信息失败');
+		$file = request()->file('faceImg');
+		if (isset($file)) {
+			// 获取表单上传文件 例如上传了001.jpg
+			// 移动到框架应用根目录/public/uploads/ 目录下
+			$info = $file->validate(['size' => 1567118, 'ext' => 'jpg,png,gif,jpeg'])->rule('date')->move(ROOT_PATH . 'public/uploads/face');
+//       var_dump($info) ;die;
+			if ($info) {
+				// 成功上传后 获取上传信息
+				$a = $info->getSaveName();
+				$imgp = str_replace("\\", "/", $a);
+				$imgpath = 'uploads/face/' . $imgp;
+				$data['faceImg'] = $imgpath;
+				//上传成功提示成功信息
+//				$this->success('上传成功');
+
+			} else {
+				// 上传失败获取错误信息
+				echo $file->getError();
+			}
+
+			if ($data['userPass'] == null ){
+				$result = $user->where('userId', $data['userId'])
+					->update(['role' => $data['role'],'faceImg' => $data['faceImg']]);
+
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+			}else{
+					$result = $user->where('userId', $data['userId'])
+						->update(['userPass' => $data['userPass'],'faceImg' => $data['faceImg']]);
+
+					if ($result != 0) {
+						$this->success('修改个人信息成功');
+					} else {
+						$this->error('修改个人信息失败');
+					}
+
+			}
+
+		}else {
+			if ($data['userPass'] == null) {
+				$result = $user->where('userId', $data['userId'])
+					->update(['role' => $data['role']]);
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+			}else{
+				$result = $user->where('userId', $data['userId'])
+					->update(['userPass' => $data['userPass'],'role' => $data['role']]);
+				if ($result != 0) {
+					$this->success('修改个人信息成功');
+				} else {
+					$this->error('修改个人信息失败');
+				}
+			}
 		}
+
 	}
 
+	/**
+	 * 管理员查看用户信息
+	 * @param $userId
+	 * @return \think\response\View
+	 */
+	public function manUserDetail($userId){
+
+		$user = model('User');
+		$data = $user->where(['userId' => $userId])->select();
+		$role = Db::table('roleinfo')->select();
+		$this->assign('data',$data);
+		$this->assign('role',$role);
+		return view();
+	}
 	/**
 	 * 用户注销功能
 	 * @return \think\response\View
@@ -213,6 +361,47 @@ class User extends Controller
 		return view('index/index');
 	}
 
+	public function upload()
+	{
+		//I('post.ImgURL','','htmlspecialchars')为获取页面文本框内的值
+		$data = input('post.');
+		$file = request()->file('faceImg');
+
+		if(isset($file)){
+			// 获取表单上传文件 例如上传了001.jpg
+			// 移动到框架应用根目录/public/uploads/ 目录下
+			$info = $file->validate(['size'=>1567118,'ext'=>'jpg,png,gif,jpeg'])->rule('date')->move(ROOT_PATH . 'public/uploads/face');
+//       var_dump($info) ;die;
+			if($info){
+				// 成功上传后 获取上传信息
+				$a=$info->getSaveName();
+				$imgp= str_replace("\\","/",$a);
+				$imgpath='uploads/face/'.$imgp;
+				$data['faceImg'] = $imgpath;
+				//上传成功提示成功信息
+//				$this->success('上传成功');
+
+			}else{
+				// 上传失败获取错误信息
+				echo $file->getError();
+			}
+		}
+		else
+		{
+//			$this->error('请选择上传文件');
+			$data['faceImg']='';
+		}
+		$user = model('User');
+		$data['userPass'] = 123456;
+		$result = $user->insert($data);
+		if ($result){
+			$this->success('添加用户成功');
+		}else{
+			$this->error('添加用户失败');
+		}
+
+
+	}
 
 
 }

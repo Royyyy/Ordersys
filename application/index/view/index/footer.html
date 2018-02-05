@@ -17,6 +17,37 @@
                 $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
             }
 //        });
+        cv(123);
+    }
+
+    function cv(str) {
+        var xmlhttp;
+        if (str.length==0)
+        {
+            document.getElementById("tips").innerHTML="";
+            return;
+        }
+        xmlhttp=new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+
+                if (xmlhttp.responseText){
+                    document.getElementById("tips").innerHTML="验证码正确";
+                    sub =  false;
+                    if (sub == false) {document.getElementById("submit").disabled = false;}
+                }else{
+                    document.getElementById("tips").innerHTML="验证码错误";
+                    sub = true;
+                    document.getElementById("submit").disabled = true;
+                }
+            }
+        }
+
+        xmlhttp.open("GET","/index/user/checkCap?verifyres="+str,true);
+        xmlhttp.send();
     }
 </script>
 <script src="__STATIC__js/jquery-3.1.0.min.js" type="text/javascript"></script>

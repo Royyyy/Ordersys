@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1517191832;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\header.html";i:1515597443;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\footer.html";i:1515607050;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:72:"E:\wamp64\www\Ordersys\public/../application/index\view\index\index.html";i:1517839539;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\header.html";i:1515597443;s:63:"E:\wamp64\www\Ordersys\application\index\view\index\footer.html";i:1517466773;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -47,15 +47,15 @@
 								<form action="<?php echo url('User/login'); ?>" method="post">
 									<div class="col-md-3">
 										<div class="form-group label-floating">
-											<label class="control-label">用户名1111</label>
-											<input type="text" class="form-control" name="userAccount">
+											<label class="control-label">用户名</label>
+											<input type="text" class="form-control" name="userAccount" required>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-3">
 											<div class="form-group label-floating">
 												<label class="control-label">密码</label>
-												<input type="password" class="form-control" name="userPass">
+												<input type="password" class="form-control" name="userPass" required>
 											</div>
 										</div>
 									</div>
@@ -63,16 +63,17 @@
 										<div class="col-md-3">
 											<div class="form-group label-floating">
 												<label class="control-label">验证码</label>
-												<input type="text" class="form-control" name="verify" data-error="验证码错误" required>
+												<input type="text" class="form-control" name="verify" data-error="验证码错误" required onkeyup="cv(this.value)">
 											</div>
 										</div>
 										<div class="col-md-3">
 											<img  class="verifyimg reloadverify" src="<?php echo url('User/verify'); ?>" alt="" onclick="reflash2()">
 										</div>
+										<span id="tips"></span>
 									</div>
 
 
-									<input type="submit" class="btn btn-primary pull-right" value="登录"/>
+									<input type="submit" class="btn btn-primary pull-right" id="submit" value="登录" disabled/>
 									<div class="clearfix"></div>
 								</form>
 							</div>
@@ -103,6 +104,37 @@
                 $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
             }
 //        });
+        cv(123);
+    }
+
+    function cv(str) {
+        var xmlhttp;
+        if (str.length==0)
+        {
+            document.getElementById("tips").innerHTML="";
+            return;
+        }
+        xmlhttp=new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+
+                if (xmlhttp.responseText){
+                    document.getElementById("tips").innerHTML="验证码正确";
+                    sub =  false;
+                    if (sub == false) {document.getElementById("submit").disabled = false;}
+                }else{
+                    document.getElementById("tips").innerHTML="验证码错误";
+                    sub = true;
+                    document.getElementById("submit").disabled = true;
+                }
+            }
+        }
+
+        xmlhttp.open("GET","/index/user/checkCap?verifyres="+str,true);
+        xmlhttp.send();
     }
 </script>
 <script src="/static/js/jquery-3.1.0.min.js" type="text/javascript"></script>

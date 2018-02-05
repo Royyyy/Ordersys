@@ -12,15 +12,15 @@
 								<form action="{:url('User/login')}" method="post">
 									<div class="col-md-3">
 										<div class="form-group label-floating">
-											<label class="control-label">用户名1111</label>
-											<input type="text" class="form-control" name="userAccount">
+											<label class="control-label">用户名</label>
+											<input type="text" class="form-control" name="userAccount" required>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-3">
 											<div class="form-group label-floating">
 												<label class="control-label">密码</label>
-												<input type="password" class="form-control" name="userPass">
+												<input type="password" class="form-control" name="userPass" required>
 											</div>
 										</div>
 									</div>
@@ -28,16 +28,17 @@
 										<div class="col-md-3">
 											<div class="form-group label-floating">
 												<label class="control-label">验证码</label>
-												<input type="text" class="form-control" name="verify" data-error="验证码错误" required>
+												<input type="text" class="form-control" name="verify" data-error="验证码错误" required onkeyup="cv(this.value)">
 											</div>
 										</div>
 										<div class="col-md-3">
 											<img  class="verifyimg reloadverify" src="{:url('User/verify')}" alt="" onclick="reflash2()">
 										</div>
+										<span id="tips"></span>
 									</div>
 
 
-									<input type="submit" class="btn btn-primary pull-right" value="登录"/>
+									<input type="submit" class="btn btn-primary pull-right" id="submit" value="登录" disabled/>
 									<div class="clearfix"></div>
 								</form>
 							</div>
