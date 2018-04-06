@@ -18,7 +18,9 @@
     "require": {
         "php": ">=5.4.0",
         "topthink/framework": "*",
-        "gregwar/captcha": "1.*"
+        "gregwar/captcha": "1.*",
+        "topthink/think-worker": "dev-master",
+        "workerman/workerman-for-win": "dev-master"
 
     },
     "extra": {

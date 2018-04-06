@@ -6,7 +6,10 @@
  * Time: 11:25
  */
 function show( $data=[]) {
-    return [
-        'data' => $data,
-    ];
+	// $result=array(    
+ //        'code'=>0,    
+ //        'msg'=>"",       
+ //        'data'=>$data,   
+ //            );    
+    return $data;
 }

@@ -9,7 +9,7 @@
 namespace app\api\controller;
 use think\Db;
 use think\Controller;
-
+use app\common\validate\UserValidate;
 class User extends Controller
 {
 	/**
@@ -25,9 +25,10 @@ class User extends Controller
 //
 //			$userAccount = $data['userAccount'];
 //			$userPass = $data['userPass'];
-			$users = model('Users');
 
-			$result = Db::table("userinfo")->where(['userAccount' => $userAccount, 'userPass' => $userPass])->select();
+
+			$result = Db::table("user")->where(['userAccount' => $userAccount, 'userPass' => $userPass])->find();
+
 			if ($result != null) {
 				return show($result);
 
@@ -43,17 +44,73 @@ class User extends Controller
 	 * 用户修改自身信息功能
 	 * @param $userData		修改内容
 	 */
-	public function updateUserInfoI($userData){
-		$userID = $userData['userId'];
+	public function updateUserInfoI($file){
 
-		$user = model('User');
-		$result = $user->where('userId',$userID)
+		$userData= json_decode($file);
+		//$userId = $userData['userId'];
+		$file2 = request()->file($file['faceImg']);
+		/*if (isset($file)) {
+			// 获取表单上传文件 例如上传了001.jpg
+			// 移动到框架应用根目录/public/uploads/ 目录下
+			$info = $file->validate(['size' => 1567118, 'ext' => 'jpg,png,gif,jpeg'])->rule('date')->move(ROOT_PATH . 'public/uploads/face');
+//       var_dump($info) ;die;
+			if ($info) {
+				// 成功上传后 获取上传信息
+				$a = $info->getSaveName();
+				$imgp = str_replace("\\", "/", $a);
+				$imgpath = 'uploads/face/' . $imgp;
+				$userData['faceImg'] = $imgpath;
+				//上传成功提示成功信息
+//				$this->success('上传成功');
+
+			} else {
+				// 上传失败获取错误信息
+				echo $file->getError();
+			}
+
+			if ($userData['userPass'] != null) {
+				$result = Db::table('user')->where('userId',$userId)
+					->update(['userPass' => $userData['userPass'], 'faceImg' => $userData['faceImg']]);
+
+				if ($result != 0){
+					return show($userData['faceImg']);
+				}else{
+					return show('null');
+				}
+			} elseif ($userData['userPass'] == null) {
+				$result = Db::table('user')->where('userId', $userId)
+					->update(['faceImg' => $userData['faceImg']]);
+
+				if ($result != 0){
+					return show($userData['faceImg']);
+				}else{
+					return show('null');
+				}
+			}
+		} else {
+			if ($userData['userPass'] != null) {
+				$result = Db::table('user')->where('userId',$userId)
+					->update(['userPass' => $userData['userPass']]);
+				if ($result != 0){
+					return show($result);
+				}else{
+					return show('null');
+				}
+
+			} else {
+				return show('null');
+			}
+		}
+
+		$result = Db::table('user')->where('userId',$userId)
 			->update(['faceImg'       =>  $userData['faceImg']]);
 		if ($result != 0){
-			return show($result);
+			return show($userData['faceImg']);
 		}else{
 			return show('null');
 		}
+		*/
+	return show($file2);
 	}
 
 	/**
@@ -61,7 +118,7 @@ class User extends Controller
 	 * @param $message 		公告
 	 */
 	public function showMessageI(){
-		$mes = Db::table('message')->order('time DSEC')->select();
+		$mes = Db::table('message')->order('time','DSEC')->select();
 		for ($i = 0;$i<count($mes);$i++) {
 			$mes[$i]['time'] = date("Y-m-d H:i:s",$mes[$i]['time']);
 		}
@@ -73,8 +130,10 @@ class User extends Controller
 	 * @param $message 		实时公告
 	 */
 	public function sendMessageI($message){
+		$data = json_decode($message,true);
 		$time = strtotime(date("Y-m-d H:i:s"));
-		$data = ['content'=>$message,'time'=>$time];
+		
+		$data = ['content'=>$data['content'],'time'=>$time];
 		$result = Db::table('message')->insert($data);
 		if ($result) {
 			# code...
@@ -104,8 +163,8 @@ class User extends Controller
 	 * 用户列表功能
 	 */
 	public function userListI(){
-		$user = model('User');
-		$data = $user->table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->where('u.role = r.roleId')->select();
+
+		$data = Db::table('user')->alias('u')->join('roleinfo r', 'u.role = r.roleId','RIGHT')->field('u.*,r.roleName')->where('u.role = r.roleId')->select();
 
 		if ($data != null) {
 			return show($data);
@@ -120,8 +179,8 @@ class User extends Controller
 	 * @param $userId 		用户id
 	 */
 	public function userDetailI($userId){
-		$user = model('User');
-		$data = $user->where(['userId' => $userId])->select();
+
+		$data = Db::table('user')->where(['userId' => $userId])->find();
 		if ($data != null) {
 			return show($data);
 
@@ -135,26 +194,28 @@ class User extends Controller
 	 * @param $userId		用户id
 	 */
 	public function userDelI($userId){
-		$user = model('User');
-		$result = $user->where(['userId'=>$userId,'role'=>0])->delete();
+		$where['role'] =array('neq','1');
+		$where['userId'] =$userId;
+		$result = Db::table('user')->where($where)->delete();
 		if ($result) {
 //			$result = "可以删除删除成功";
 			return show($result);
 		}else{
 //			$result = "删除失败";
-			return show('null');
+			return show(2);
 		}
 	}
 
 	/**
-	 * 添加用户功能
+	 * 添加用户功能a
 	 * @param $userData		用户信息
 	 */
 	public function userAddI($userData){
 
-
-		$user = model('User');
-		$result = $user->insert($userData);
+		$data = json_decode($userData,true);
+		$data = ['userAccount'=>$data['userAccount'],'userPass'=>$data['userPass'],'role'=>$data['role']];
+	
+		$result = Db::table('user')->insert($data);
 		if ($result) {
 			# code...
 			return show($result);
@@ -168,15 +229,32 @@ class User extends Controller
 	 * @param $userData		用户信息
 	 */
 	public function changeUserInfoI($userData){
-		$userID = $userData['userId'];
 
-		$user = model('User');
-		$result = $user->where('userId', $userID)
-			->update(['faceImg' => $userData['faceImg'], 'role' => $userData['role']]);
+		$userData = json_decode($userData,true);
+		$userID = $userData['userId'];
+		
+		if ($userData['faceImg'] == null) {
+			if ($userData['userPass'] == null) {
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['role'=>$userData['role']]);
+			}elseif ($userData['role'] == null){
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['userPass'=>$userData['userPass']]);
+			}else{
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['userPass'=>$userData['userPass'],'role'=>$userData['role']]);
+			}
+		}else{
+			if ($userData['userPass'] == null) {
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['role'=>$userData['role'],'faceImg'=>$userData['faceImg']]);
+			}elseif ($userData['role'] == null){
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['userPass'=>$userData['userPass'],'faceImg'=>$userData['faceImg']]);
+			}else{
+				$result = Db::table('user')->where(['userId'=>$userID])->update(['userPass'=>$userData['userPass'],'role'=>$userData['role'],'faceImg'=>$userData['faceImg']]);
+			}
+		}
+		
 		if ($result != 0) {
 			return show($result);
 		} else {
-			return show('null');
+			return show(2);
 		}
 	}
 
